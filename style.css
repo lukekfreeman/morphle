@@ -57,11 +57,27 @@ main {
   overflow: auto;
 }
 
-#game-info {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 1em;
+#starting-word {
+  background-color: #3a3a3c; /* Darker background */
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+#starting-word p {
+  margin: 0;
   font-size: 1.2em;
+  color: #b0b0b0; /* Darker text */
+}
+
+#game-info {
+  text-align: center;
+  margin-bottom: 10px;
+  font-size: 1.2em;
+}
+
+#game-info p {
+  margin: 0;
 }
 
 #message-container {
@@ -431,6 +447,10 @@ main {
     font-size: 1.5em;
   }
 
+  #starting-word p, #game-info p {
+    font-size: 1em;
+  }
+
   #game-info {
     flex-direction: column;
     gap: 10px;
@@ -485,5 +505,24 @@ main {
     bottom: 90px; /* Adjusted for smaller screens */
     font-size: 0.9em;
     padding: 8px 16px;
+  }
+
+  /* Target Word Display Above Keyboard */
+  #game-info {
+    position: fixed;
+    bottom: 130px; /* Adjust based on keyboard height */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #3a3a3c;
+    padding: 8px 16px;
+    border-radius: 5px;
+    color: #b0b0b0;
+    font-size: 1em;
+    z-index: 999;
+  }
+
+  /* Ensure main content doesn't overlap with fixed game-info */
+  main {
+    padding-bottom: 200px; /* Increased to accommodate fixed game-info and error message */
   }
 }
