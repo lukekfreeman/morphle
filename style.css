@@ -5,7 +5,6 @@ body {
   font-family: 'Arial', sans-serif;
   margin: 0;
   padding: 0;
-  overflow-x: hidden; /* Prevent horizontal scroll */
 }
 
 .game-container {
@@ -14,31 +13,24 @@ body {
   align-items: center;
   min-height: 100vh;
   position: relative;
-  padding-top: 60px; /* Space for fixed header */
 }
 
-/* Fixed Header */
-header {
-  position: fixed;
-  top: 0;
+header, footer {
   width: 100%;
-  background-color: #121213;
-  padding: 10px 20px;
-  box-sizing: border-box;
-  z-index: 1004; /* Above other elements */
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  padding: 1em;
+  text-align: center;
+  position: relative;
 }
 
 header h1 {
   margin: 0;
-  font-size: 1.8em;
+  font-size: 2em;
 }
 
 .nav-buttons {
   position: absolute;
-  right: 20px;
+  top: 1em;
+  right: 1em;
   display: flex;
   gap: 15px;
 }
@@ -47,7 +39,7 @@ header h1 {
   background-color: transparent;
   border: none;
   color: #ffffff;
-  font-size: 1.2em;
+  font-size: 1.5em;
   cursor: pointer;
 }
 
@@ -55,29 +47,38 @@ header h1 {
   color: #6AAA64;
 }
 
-/* Prefilled Starting Word Row */
-.tile-row.starting-row {
-  background-color: #3a3a3c; /* Darker background */
-  border-radius: 5px;
+main {
+  flex: 1;
+  width: 100%;
+  max-width: 600px;
+  padding: 1em;
+  padding-bottom: 200px; /* Prevent content from being hidden behind keyboard */
+  box-sizing: border-box;
+  overflow: auto;
 }
 
-.tile-row.starting-row .tile {
-  background-color: #3a3a3c;
-  color: #b0b0b0; /* Lighter text */
-  border: 2px solid #3a3a3c;
+#game-info {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1em;
+  font-size: 1.2em;
 }
 
-/* Grid Container for Guesses */
+#message-container {
+  text-align: center;
+  margin-bottom: 10px;
+  height: 24px;
+  color: #ffffff;
+  font-size: 1em;
+}
+
 #grid-container {
   display: grid;
   grid-template-rows: repeat(10, 1fr);
   grid-gap: 5px;
-  margin-bottom: 100px; /* Space for fixed elements */
-  width: 100%;
-  max-width: 400px;
+  margin-bottom: 20px;
 }
 
-/* Tile Styles */
 .tile-row {
   display: flex;
   justify-content: center;
@@ -142,7 +143,7 @@ header h1 {
   }
 }
 
-/* On-Screen Keyboard Styles */
+/* Keyboard Styles */
 #keyboard-container {
   position: fixed;
   bottom: 0;
@@ -153,7 +154,6 @@ header h1 {
   display: flex;
   flex-direction: column;
   align-items: center;
-  z-index: 1003;
 }
 
 .keyboard-row {
@@ -175,8 +175,6 @@ header h1 {
   display: flex;
   justify-content: center;
   align-items: center;
-  user-select: none;
-  touch-action: manipulation; /* Prevent default touch actions */
 }
 
 .key.wide {
@@ -198,15 +196,11 @@ header h1 {
   color: #fff !important;
 }
 
-.key:active {
-  transform: scale(0.95);
-}
-
 /* Modal Styles */
 .modal {
   display: none;
   position: fixed;
-  z-index: 1005;
+  z-index: 1001;
   left: 0;
   top: 0;
   width: 100%;
@@ -251,7 +245,7 @@ header h1 {
   display: none; /* Hidden by default */
   justify-content: center;
   align-items: center;
-  z-index: 1006;
+  z-index: 1002;
 }
 
 .overlay-content {
@@ -402,35 +396,52 @@ header h1 {
   margin-right: 10px;
 }
 
-/* Fixed Error Message */
-.error-message {
-  position: fixed;
-  bottom: 130px; /* Positioned above the keyboard and target word box */
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: #ff4d4d;
-  color: #ffffff;
-  padding: 10px 20px;
-  border-radius: 5px;
-  z-index: 1007;
-  display: none; /* Hidden by default */
-  font-size: 1em;
-}
+/* Responsive Design */
+@media (max-width: 600px) {
+  .tile {
+    width: 40px;
+    height: 40px;
+    font-size: 1.5em;
+  }
 
-/* "Morph to" Box Above Keyboard */
-.target-word-box {
-  position: fixed;
-  bottom: 90px; /* Adjust based on keyboard height */
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: #3a3a3c;
-  padding: 8px 16px;
-  border-radius: 5px;
-  color: #b0b0b0;
-  font-size: 1em;
-  z-index: 1003;
-  max-width: 90%;
-  text-align: center;
+  #game-info {
+    flex-direction: column;
+    gap: 10px;
+    font-size: 1em;
+  }
+
+  .nav-buttons button {
+    font-size: 1.2em;
+  }
+
+  .overlay-content {
+    padding: 15px;
+  }
+
+  .overlay-header h2 {
+    font-size: 1.5em;
+  }
+
+  .stat-label, .stat-value {
+    font-size: 1em;
+  }
+
+  .guess-number {
+    font-size: 0.9em;
+  }
+
+  .guess-progress::after {
+    font-size: 0.7em;
+  }
+
+  .overlay-button {
+    padding: 8px;
+    font-size: 0.9em;
+  }
+
+  .nav-buttons {
+    gap: 10px;
+  }
 }
 
 /* Animation for game title */
@@ -442,86 +453,4 @@ header h1 {
 
 .animate-title {
   animation: titleAnimation 0.3s ease-in-out;
-}
-
-/* Responsive Design */
-@media (max-width: 600px) {
-  /* Adjust Tile Sizes */
-  .tile {
-    width: 40px;
-    height: 40px;
-    font-size: 1.5em;
-  }
-
-  /* Starting Word Row Styling */
-  .tile-row.starting-row {
-    background-color: #3a3a3c; /* Darker background */
-  }
-
-  .tile-row.starting-row .tile {
-    background-color: #3a3a3c;
-    color: #b0b0b0; /* Lighter text */
-    border: 2px solid #3a3a3c;
-  }
-
-  /* Adjust Header Title Size */
-  header h1 {
-    font-size: 1.5em;
-  }
-
-  /* Adjust Navigation Buttons */
-  .nav-buttons button {
-    font-size: 1em;
-  }
-
-  /* Adjust "Morph to" Box Position and Size */
-  .target-word-box {
-    bottom: 80px; /* Adjusted for smaller screens */
-    padding: 6px 12px;
-    font-size: 0.9em;
-  }
-
-  /* Adjust Error Message Size */
-  .error-message {
-    bottom: 120px; /* Adjusted for smaller screens */
-    font-size: 0.9em;
-    padding: 8px 16px;
-  }
-
-  /* Adjust Keyboard Keys for Smaller Screens */
-  .key {
-    width: 35px;
-    height: 50px;
-    font-size: 0.9em;
-  }
-
-  .key.wide {
-    width: 50px;
-  }
-
-  /* Adjust Grid Container Width */
-  #grid-container {
-    max-width: 300px;
-  }
-
-  /* Adjust Guess Distribution */
-  .guess-distribution {
-    gap: 8px;
-  }
-
-  /* Prevent Overlaps */
-  header, .target-word-box, .error-message, #grid-container {
-    box-sizing: border-box;
-    padding: 0 10px;
-  }
-}
-
-/* Prevent Zoom on Rapid Taps */
-button, .key {
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent; /* Remove tap highlight */
-}
-
-button:focus, .key:focus {
-  outline: none;
 }
