@@ -10,7 +10,11 @@
   <div class="game-container">
     <header>
       <h1>Morphle</h1>
-      <button id="tutorial-button">?</button>
+      <div class="nav-buttons">
+        <button id="stats-button" title="Statistics">📊</button>
+        <button id="mode-button" title="Switch Mode">📅∞</button>
+        <button id="tutorial-button" title="How to Play">?</button>
+      </div>
     </header>
     <main>
       <div id="game-info">
@@ -19,12 +23,11 @@
       </div>
       <div id="message-container"></div>
       <div id="grid-container"></div>
-      <!-- Share Button -->
-      <button id="share-button" style="display:none;">Share</button>
+      <!-- Share Button (Hidden initially) -->
+      <button id="share-button-overlay" class="overlay-button">📤 Share</button>
     </main>
     <footer>
-      <button id="daily-mode">Daily Mode</button>
-      <button id="unlimited-mode">Unlimited Mode</button>
+      <!-- Removed daily-mode and unlimited-mode buttons from footer -->
     </footer>
   </div>
 
@@ -46,10 +49,52 @@
       </ul>
       <p><strong>Color Indicators:</strong></p>
       <ul>
-        <li><span class="tile correct">G</span> - Correct letter in the correct position.</li>
-        <li><span class="tile present">Y</span> - Correct letter in the wrong position.</li>
-        <li><span class="tile absent">G</span> - Letter not in the destination word.</li>
+        <li><span class="tile correct">🟩</span> - Correct letter in the correct position.</li>
+        <li><span class="tile present">🟨</span> - Correct letter in the wrong position.</li>
+        <li><span class="tile absent">⬜</span> - Letter not in the destination word.</li>
       </ul>
+    </div>
+  </div>
+
+  <!-- Stats Overlay -->
+  <div id="stats-overlay" class="overlay">
+    <div class="overlay-content">
+      <div class="overlay-header">
+        <div class="star-icon">⭐</div>
+        <h2>Congratulations!</h2>
+        <span class="close-overlay">&times;</span>
+      </div>
+      <div class="overlay-section">
+        <h3>Statistics</h3>
+        <div class="stats">
+          <div class="stat">
+            <span class="stat-label">Played</span>
+            <span class="stat-value" id="stat-played">0</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Win %</span>
+            <span class="stat-value" id="stat-win">0%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Current Streak</span>
+            <span class="stat-value" id="stat-current-streak">0</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Max Streak</span>
+            <span class="stat-value" id="stat-max-streak">0</span>
+          </div>
+        </div>
+      </div>
+      <div class="overlay-section">
+        <h3>Guess Distribution</h3>
+        <div class="guess-distribution" id="guess-distribution">
+          <!-- Guess distribution bars will be generated here -->
+        </div>
+      </div>
+      <div class="overlay-section">
+        <button id="share-button-overlay" class="overlay-button">📤 Share</button>
+        <button id="explore-button" class="overlay-button explore-button">🔍 Explore</button>
+      </div>
     </div>
   </div>
 
