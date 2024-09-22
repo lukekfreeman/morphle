@@ -1,138 +1,76 @@
+/* Global Styles */
 body {
     background-color: #121213;
     color: #ffffff;
     font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
-}
-
-.game-container {
+  }
+  
+  .game-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     min-height: 100vh;
-}
-
-header, footer {
+  }
+  
+  header, footer {
     width: 100%;
     padding: 1em;
     text-align: center;
-}
-
-header h1 {
+  }
+  
+  header h1 {
     margin: 0;
-}
-
-#tutorial-button {
+  }
+  
+  #tutorial-button {
     position: absolute;
     right: 1em;
     top: 1em;
-}
-
-main {
+    background-color: transparent;
+    border: none;
+    color: #ffffff;
+    font-size: 1.5em;
+    cursor: pointer;
+  }
+  
+  main {
     flex: 1;
     width: 100%;
     max-width: 600px;
     padding: 1em;
-}
-
-#game-info {
+    padding-bottom: 200px; /* Prevent content from being hidden behind keyboard */
+    box-sizing: border-box;
+    overflow: auto;
+  }
+  
+  #game-info {
     display: flex;
     justify-content: space-between;
     margin-bottom: 1em;
-}
-
-#grid-container {
+  }
+  
+  #message-container {
+    text-align: center;
+    margin-bottom: 10px;
+    height: 24px;
+    color: #ffffff;
+  }
+  
+  #grid-container {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 5px;
-}
-
-.tile {
-    width: 100%;
-    padding-top: 100%;
-    background-color: #3a3a3c;
-    position: relative;
-}
-
-.tile-content {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 2em;
-}
-
-.correct {
-    background-color: #538d4e !important;
-}
-
-.present {
-    background-color: #b59f3b !important;
-}
-
-.absent {
-    background-color: #3a3a3c !important;
-}
-
-#keyboard-container {
-    margin-top: 1em;
-}
-
-button {
-    background-color: #818384;
-    border: none;
-    padding: 0.5em;
-    margin: 0.2em;
-    border-radius: 4px;
-    color: #ffffff;
-    cursor: pointer;
-}
-
-button:hover {
-    background-color: #565758;
-}
-
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(18, 18, 19, 0.9);
-}
-
-.modal-content {
-    background-color: #1a1a1b;
-    margin: 15% auto;
-    padding: 2em;
-    border: 1px solid #888;
-    width: 80%;
-    color: #ffffff;
-    position: relative;
-}
-
-.close-button {
-    color: #aaaaaa;
-    position: absolute;
-    top: 1em;
-    right: 1em;
-    font-size: 2em;
-    cursor: pointer;
-}
-
-/* Add this to your existing CSS */
-
-.tile-row {
+    grid-template-rows: repeat(10, 1fr);
+    grid-gap: 5px;
+    margin-bottom: 20px;
+  }
+  
+  .tile-row {
     display: flex;
     justify-content: center;
-    margin-bottom: 5px;
-}
-
-.tile {
+  }
+  
+  .tile {
     width: 60px;
     height: 60px;
     background-color: #3a3a3c;
@@ -144,26 +82,150 @@ button:hover {
     font-weight: bold;
     text-transform: uppercase;
     border: 2px solid #3a3a3c;
-}
-
-.tile.filled {
+  }
+  
+  .tile.filled {
     border: 2px solid #565758;
-}
-
-.tile.correct {
+  }
+  
+  .tile.correct {
     background-color: #538d4e !important;
     border-color: #538d4e !important;
     color: #fff;
-}
-
-.tile.present {
+  }
+  
+  .tile.present {
     background-color: #b59f3b !important;
     border-color: #b59f3b !important;
     color: #fff;
-}
-
-.tile.absent {
+  }
+  
+  .tile.absent {
     background-color: #3a3a3c !important;
     border-color: #3a3a3c !important;
     color: #fff;
-}
+  }
+  
+  .tile.invalid {
+    animation: shake 0.5s;
+    background-color: #ff4d4d !important;
+    border-color: #ff4d4d !important;
+  }
+  
+  /* Shake Animation */
+  @keyframes shake {
+    10%, 90% {
+        transform: translateX(-1px);
+    }
+    20%, 80% {
+        transform: translateX(2px);
+    }
+    30%, 50%, 70% {
+        transform: translateX(-4px);
+    }
+    40%, 60% {
+        transform: translateX(4px);
+    }
+  }
+  
+  /* Keyboard Styles */
+  #keyboard-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #121213;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .keyboard-row {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 5px;
+  }
+  
+  .key {
+    width: 40px;
+    height: 60px;
+    margin: 2px;
+    background-color: #818384;
+    border: none;
+    border-radius: 4px;
+    color: #ffffff;
+    font-size: 1em;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .key.wide {
+    width: 60px;
+  }
+  
+  .key.correct {
+    background-color: #538d4e !important;
+    color: #fff !important;
+  }
+  
+  .key.present {
+    background-color: #b59f3b !important;
+    color: #fff !important;
+  }
+  
+  .key.absent {
+    background-color: #3a3a3c !important;
+    color: #fff !important;
+  }
+  
+  /* Modal Styles */
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(18, 18, 19, 0.9);
+  }
+  
+  .modal-content {
+    background-color: #1a1a1b;
+    margin: 15% auto;
+    padding: 2em;
+    border: 1px solid #888;
+    width: 80%;
+    color: #ffffff;
+    position: relative;
+  }
+  
+  .close-button {
+    color: #aaaaaa;
+    position: absolute;
+    right: 1em;
+    top: 1em;
+    font-size: 2em;
+    cursor: pointer;
+  }
+  
+  /* Share Button Styles */
+  #share-button {
+    background-color: #6AAA64;
+    color: #ffffff;
+    border: none;
+    padding: 0.5em 1em;
+    margin-top: 10px;
+    cursor: pointer;
+    font-size: 1em;
+    border-radius: 5px;
+  }
+  
+  #share-button:hover {
+    background-color: #538d4e;
+  }
+  

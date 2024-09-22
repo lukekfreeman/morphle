@@ -1,40 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Morphle</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="icon" href="images/favicon.ico">
+  <meta charset="UTF-8">
+  <title>Morphle</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="images/favicon.ico">
 </head>
 <body>
-    <div class="game-container">
-        <header>
-            <h1>Morphle</h1>
-            <button id="tutorial-button">?</button>
-        </header>
-        <main>
-            <div id="game-info">
-                <p>Start Word: <span id="start-word"></span></p>
-                <p>Destination Word: <span id="end-word"></span></p>
-            </div>
-            <div id="grid-container"></div>
-            <div id="keyboard-container"></div>
-        </main>
-        <footer>
-            <button id="daily-mode">Daily Mode</button>
-            <button id="unlimited-mode">Unlimited Mode</button>
-        </footer>
-    </div>
+  <div class="game-container">
+    <header>
+      <h1>Morphle</h1>
+      <button id="tutorial-button">?</button>
+    </header>
+    <main>
+      <div id="game-info">
+        <p>Start Word: <span id="start-word"></span></p>
+        <p>Destination Word: <span id="end-word"></span></p>
+      </div>
+      <div id="message-container"></div>
+      <div id="grid-container"></div>
+      <!-- Share Button -->
+      <button id="share-button" style="display:none;">Share</button>
+    </main>
+    <footer>
+      <button id="daily-mode">Daily Mode</button>
+      <button id="unlimited-mode">Unlimited Mode</button>
+    </footer>
+  </div>
 
-    <!-- Tutorial Modal -->
-    <div id="tutorial-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-button">&times;</span>
-            <h2>How to Play Morphle</h2>
-            <p>Transform the starting word into the destination word by swapping one letter at a time. You can rearrange the letters after each swap. Each intermediate word must be a valid 5-letter word.</p>
-        </div>
-    </div>
+  <!-- On-Screen Keyboard -->
+  <div id="keyboard-container"></div>
 
-    <script src="script.js"></script>
+  <!-- Tutorial Modal -->
+  <div id="tutorial-modal" class="modal">
+    <div class="modal-content">
+      <span class="close-button">&times;</span>
+      <h2>How to Play Morphle</h2>
+      <p>Transform the starting word into the destination word by swapping one letter at a time. You can rearrange the letters after each swap. Each intermediate word must be a valid 5-letter word.</p>
+      <p><strong>Rules:</strong></p>
+      <ul>
+        <li>Only one letter can change from the previous word.</li>
+        <li>You can rearrange the letters after the change.</li>
+        <li>You have 10 guesses to reach the destination word.</li>
+        <li>Use the on-screen keyboard or your physical keyboard to enter words.</li>
+      </ul>
+      <p><strong>Color Indicators:</strong></p>
+      <ul>
+        <li><span class="tile correct">G</span> - Correct letter in the correct position.</li>
+        <li><span class="tile present">Y</span> - Correct letter in the wrong position.</li>
+        <li><span class="tile absent">G</span> - Letter not in the destination word.</li>
+      </ul>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
