@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Morphle</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Ensures proper scaling on mobile -->
   <link rel="stylesheet" href="style.css">
   <link rel="icon" href="images/favicon.ico">
   <!-- FontAwesome CDN for Icons -->
@@ -11,10 +12,10 @@
 <body>
   <div class="game-container">
     <header>
-      <h1 id="game-title">Morphle</h1>
+      <h1 id="game-title">Morphle Daily</h1> <!-- Default to Daily mode -->
       <div class="nav-buttons">
         <button id="stats-button" title="Statistics"><i class="fas fa-chart-bar"></i></button>
-        <button id="mode-button" title="Switch Mode"><i class="fas fa-calendar-alt"></i></button>
+        <button id="mode-button" title="Switch to Unlimited Mode"><i class="fas fa-infinity"></i></button> <!-- Default to Infinity icon -->
         <button id="tutorial-button" title="How to Play"><i class="fas fa-question-circle"></i></button>
       </div>
     </header>
@@ -34,6 +35,9 @@
   <!-- On-Screen Keyboard -->
   <div id="keyboard-container"></div>
 
+  <!-- Fixed Error Message Above Keyboard -->
+  <div id="error-message" class="error-message"></div>
+
   <!-- Tutorial Modal -->
   <div id="tutorial-modal" class="modal">
     <div class="modal-content">
@@ -42,7 +46,7 @@
       <p>Transform the starting word into the destination word by swapping one letter at a time. You can rearrange the letters after each swap. Each intermediate word must be a valid 5-letter word.</p>
       <p><strong>Rules:</strong></p>
       <ul>
-        <li>Only one letter can change from the previous word.</li>
+        <li>You may change up to one letter from the previous word.</li>
         <li>You can rearrange the letters after the change.</li>
         <li>You have 10 guesses to reach the destination word.</li>
         <li>Use the on-screen keyboard or your physical keyboard to enter words.</li>

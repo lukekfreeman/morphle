@@ -52,7 +52,7 @@ main {
   width: 100%;
   max-width: 600px;
   padding: 1em;
-  padding-bottom: 200px; /* Prevent content from being hidden behind keyboard */
+  padding-bottom: 150px; /* Adjusted to accommodate error message */
   box-sizing: border-box;
   overflow: auto;
 }
@@ -154,6 +154,7 @@ main {
   display: flex;
   flex-direction: column;
   align-items: center;
+  z-index: 1000;
 }
 
 .keyboard-row {
@@ -396,6 +397,32 @@ main {
   margin-right: 10px;
 }
 
+/* Fixed Error Message */
+.error-message {
+  position: fixed;
+  bottom: 80px; /* Positioned above the keyboard */
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #ff4d4d;
+  color: #ffffff;
+  padding: 10px 20px;
+  border-radius: 5px;
+  z-index: 1003;
+  display: none; /* Hidden by default */
+  font-size: 1em;
+}
+
+/* Animation for game title */
+@keyframes titleAnimation {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+.animate-title {
+  animation: titleAnimation 0.3s ease-in-out;
+}
+
 /* Responsive Design */
 @media (max-width: 600px) {
   .tile {
@@ -442,15 +469,21 @@ main {
   .nav-buttons {
     gap: 10px;
   }
-}
 
-/* Animation for game title */
-@keyframes titleAnimation {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.2); }
-  100% { transform: scale(1); }
-}
+  /* Adjust keyboard keys for smaller screens */
+  .key {
+    width: 35px;
+    height: 50px;
+    font-size: 0.9em;
+  }
 
-.animate-title {
-  animation: titleAnimation 0.3s ease-in-out;
+  .key.wide {
+    width: 50px;
+  }
+
+  #error-message {
+    bottom: 90px; /* Adjusted for smaller screens */
+    font-size: 0.9em;
+    padding: 8px 16px;
+  }
 }
