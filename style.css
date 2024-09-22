@@ -1,527 +1,570 @@
-/* Global Styles */
-body {
-  background-color: #121213;
-  color: #ffffff;
-  font-family: 'Arial', sans-serif;
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden; /* Prevent horizontal scroll */
-}
-
-.game-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-height: 100vh;
-  position: relative;
-  padding-top: 60px; /* Space for fixed header */
-}
-
-/* Fixed Header */
-header {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  background-color: #121213;
-  padding: 10px 20px;
-  box-sizing: border-box;
-  z-index: 1004; /* Above other elements */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-header h1 {
-  margin: 0;
-  font-size: 1.8em;
-}
-
-.nav-buttons {
-  position: absolute;
-  right: 20px;
-  display: flex;
-  gap: 15px;
-}
-
-.nav-buttons button {
-  background-color: transparent;
-  border: none;
-  color: #ffffff;
-  font-size: 1.2em;
-  cursor: pointer;
-}
-
-.nav-buttons button:hover {
-  color: #6AAA64;
-}
-
-/* Prefilled Starting Word Row */
-.tile-row.starting-row {
-  background-color: #3a3a3c; /* Darker background */
-  border-radius: 5px;
-}
-
-.tile-row.starting-row .tile {
-  background-color: #3a3a3c;
-  color: #b0b0b0; /* Lighter text */
-  border: 2px solid #3a3a3c;
-}
-
-/* Grid Container for Guesses */
-#grid-container {
-  display: grid;
-  grid-template-rows: repeat(10, 1fr);
-  grid-gap: 5px;
-  margin-bottom: 100px; /* Space for fixed elements */
-  width: 100%;
-  max-width: 400px;
-}
-
-/* Tile Styles */
-.tile-row {
-  display: flex;
-  justify-content: center;
-}
-
-.tile {
-  width: 60px;
-  height: 60px;
-  background-color: #3a3a3c;
-  margin: 0 2px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 2em;
-  font-weight: bold;
-  text-transform: uppercase;
-  border: 2px solid #3a3a3c;
-  border-radius: 5px;
-}
-
-.tile.filled {
-  border: 2px solid #565758;
-}
-
-.tile.correct {
-  background-color: #538d4e !important;
-  border-color: #538d4e !important;
-  color: #fff;
-}
-
-.tile.present {
-  background-color: #b59f3b !important;
-  border-color: #b59f3b !important;
-  color: #fff;
-}
-
-.tile.absent {
-  background-color: #3a3a3c !important;
-  border-color: #3a3a3c !important;
-  color: #fff;
-}
-
-.tile.invalid {
-  animation: shake 0.5s;
-  background-color: #ff4d4d !important;
-  border-color: #ff4d4d !important;
-}
-
-/* Shake Animation */
-@keyframes shake {
-  10%, 90% {
-      transform: translateX(-1px);
+/* =======================
+   Global Styles
+   ======================= */
+   body {
+    background-color: #121213;
+    color: #ffffff;
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden; /* Prevent horizontal scroll */
   }
-  20%, 80% {
-      transform: translateX(2px);
+  
+  main {
+    flex: 1;
+    width: 100%;
+    max-width: 400px;
+    padding: 1em;
+    padding-bottom: 260px; /* Increased from 100px */
+    box-sizing: border-box;
+    overflow: auto;
   }
-  30%, 50%, 70% {
-      transform: translateX(-4px);
+  
+  .game-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    position: relative;
+    padding-top: 60px; /* Space for fixed header */
   }
-  40%, 60% {
-      transform: translateX(4px);
+  
+  /* =======================
+     Header Styles
+     ======================= */
+  header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background-color: #121213;
+    padding: 10px 20px;
+    box-sizing: border-box;
+    z-index: 1004; /* Above other elements */
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
-}
-
-/* On-Screen Keyboard Styles */
-#keyboard-container {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background-color: #121213;
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  z-index: 1003;
-}
-
-.keyboard-row {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 5px;
-}
-
-.key {
-  width: 40px;
-  height: 60px;
-  margin: 2px;
-  background-color: #818384;
-  border: none;
-  border-radius: 4px;
-  color: #ffffff;
-  font-size: 1em;
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  user-select: none;
-  touch-action: manipulation; /* Prevent default touch actions */
-}
-
-.key.wide {
-  width: 60px;
-}
-
-.key.correct {
-  background-color: #538d4e !important;
-  color: #fff !important;
-}
-
-.key.present {
-  background-color: #b59f3b !important;
-  color: #fff !important;
-}
-
-.key.absent {
-  background-color: #3a3a3c !important;
-  color: #fff !important;
-}
-
-.key:active {
-  transform: scale(0.95);
-}
-
-/* Modal Styles */
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 1005;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(18, 18, 19, 0.95);
-}
-
-.modal-content {
-  background-color: #1a1a1b;
-  margin: 10% auto;
-  padding: 20px;
-  border: 1px solid #888;
-  width: 90%;
-  max-width: 500px;
-  color: #ffffff;
-  border-radius: 10px;
-  position: relative;
-}
-
-.close-button {
-  color: #aaaaaa;
-  position: absolute;
-  right: 20px;
-  top: 15px;
-  font-size: 2em;
-  cursor: pointer;
-}
-
-.close-button:hover {
-  color: #ffffff;
-}
-
-/* Overlay Styles */
-.overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(18, 18, 19, 0.95);
-  display: none; /* Hidden by default */
-  justify-content: center;
-  align-items: center;
-  z-index: 1006;
-}
-
-.overlay-content {
-  background-color: #1a1a1b;
-  padding: 20px;
-  border-radius: 10px;
-  width: 90%;
-  max-width: 500px;
-  color: #ffffff;
-  position: relative;
-}
-
-.overlay-header {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.star-icon {
-  font-size: 3em;
-  color: #f5c518;
-}
-
-.overlay-header h2 {
-  margin: 10px 0;
-  font-size: 1.8em;
-}
-
-.close-overlay {
-  position: absolute;
-  top: 15px;
-  right: 20px;
-  font-size: 2em;
-  cursor: pointer;
-  color: #ffffff;
-}
-
-.overlay-section {
-  margin-bottom: 20px;
-}
-
-.overlay-section h3 {
-  text-align: center;
-  margin-bottom: 10px;
-  text-decoration: underline;
-}
-
-.stats {
-  display: flex;
-  justify-content: space-around;
-  flex-wrap: wrap;
-}
-
-.stat {
-  text-align: center;
-  margin-bottom: 10px;
-}
-
-.stat-label {
-  display: block;
-  font-weight: bold;
-  margin-bottom: 5px;
-}
-
-.stat-value {
-  display: block;
-  font-size: 1.2em;
-}
-
-.guess-distribution {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.guess-bar {
-  display: flex;
-  align-items: center;
-}
-
-.guess-number {
-  width: 20px;
-  text-align: right;
-  margin-right: 10px;
-  font-size: 1em;
-}
-
-.guess-progress {
-  flex: 1;
-  height: 20px;
-  background-color: #3a3a3c;
-  border-radius: 5px;
-  position: relative;
-}
-
-.guess-progress::after {
-  content: attr(data-count);
-  position: absolute;
-  right: 5px;
-  top: 0;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  color: #ffffff;
-  font-size: 0.8em;
-}
-
-.guess-bar-green {
-  background-color: #538d4e;
-  height: 100%;
-  border-radius: 5px;
-  transition: width 0.5s ease-in-out;
-}
-
-.guess-bar-gray {
-  background-color: #3a3a3c;
-  height: 100%;
-  border-radius: 5px;
-  transition: width 0.5s ease-in-out;
-}
-
-.guess-bar-failed {
-  background-color: #ff4d4d;
-  height: 100%;
-  border-radius: 5px;
-  transition: width 0.5s ease-in-out;
-}
-
-.overlay-button {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
-  background-color: #6AAA64;
-  border: none;
-  border-radius: 5px;
-  color: #ffffff;
-  font-size: 1em;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.overlay-button:hover {
-  background-color: #538d4e;
-}
-
-#share-button-overlay i {
-  margin-right: 10px;
-}
-
-/* Fixed Error Message */
-.error-message {
-  position: fixed;
-  bottom: 130px; /* Positioned above the keyboard and target word box */
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: #ff4d4d;
-  color: #ffffff;
-  padding: 10px 20px;
-  border-radius: 5px;
-  z-index: 1007;
-  display: none; /* Hidden by default */
-  font-size: 1em;
-}
-
-/* "Morph to" Box Above Keyboard */
-.target-word-box {
-  position: fixed;
-  bottom: 90px; /* Adjust based on keyboard height */
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: #3a3a3c;
-  padding: 8px 16px;
-  border-radius: 5px;
-  color: #b0b0b0;
-  font-size: 1em;
-  z-index: 1003;
-  max-width: 90%;
-  text-align: center;
-}
-
-/* Animation for game title */
-@keyframes titleAnimation {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.2); }
-  100% { transform: scale(1); }
-}
-
-.animate-title {
-  animation: titleAnimation 0.3s ease-in-out;
-}
-
-/* Responsive Design */
-@media (max-width: 600px) {
-  /* Adjust Tile Sizes */
-  .tile {
-    width: 40px;
-    height: 40px;
-    font-size: 1.5em;
+  
+  header h1 {
+    margin: 0;
+    font-size: 1.8em;
+    transition: transform 0.3s ease-in-out;
   }
-
-  /* Starting Word Row Styling */
+  
+  .nav-buttons {
+    position: absolute;
+    right: 20px;
+    display: flex;
+    gap: 15px;
+  }
+  
+  .nav-buttons button {
+    background-color: transparent;
+    border: none;
+    color: #ffffff;
+    font-size: 1.2em;
+    cursor: pointer;
+  }
+  
+  .nav-buttons button:hover {
+    color: #6AAA64;
+  }
+  
+  /* =======================
+     Main Content Styles
+     ======================= */
+  
+  /* Prefilled Starting Word Row */
   .tile-row.starting-row {
-    background-color: #3a3a3c; /* Darker background */
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+    opacity: 50%;
   }
-
+  
   .tile-row.starting-row .tile {
     background-color: #3a3a3c;
     color: #b0b0b0; /* Lighter text */
     border: 2px solid #3a3a3c;
   }
-
-  /* Adjust Header Title Size */
-  header h1 {
-    font-size: 1.5em;
+  
+  /* Grid Container for Guesses */
+  #grid-container {
+    display: grid;
+    grid-template-rows: repeat(10, 1fr);
+    grid-gap: 5px;
+    margin-bottom: 100px; /* Space for fixed elements */
+    width: 100%;
+    max-width: 400px;
   }
-
-  /* Adjust Navigation Buttons */
-  .nav-buttons button {
+  
+  /* Tile Styles */
+  .tile-row {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .tile {
+    width: 60px;
+    height: 60px;
+    background-color: #3a3a3c;
+    margin: 0 2px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2em;
+    font-weight: bold;
+    text-transform: uppercase;
+    border: 2px solid #3a3a3c;
+    border-radius: 5px;
+  }
+  
+  .tile.filled {
+    border: 2px solid #565758;
+  }
+  
+  .tile.correct {
+    background-color: #538d4e !important;
+    border-color: #538d4e !important;
+    color: #fff;
+  }
+  
+  .tile.present {
+    background-color: #b59f3b !important;
+    border-color: #b59f3b !important;
+    color: #fff;
+  }
+  
+  .tile.absent {
+    background-color: #3a3a3c !important;
+    border-color: #3a3a3c !important;
+    color: #fff;
+  }
+  
+  .tile.invalid {
+    animation: shake 0.5s;
+    background-color: #ff4d4d !important;
+    border-color: #ff4d4d !important;
+  }
+  
+  /* Shake Animation */
+  @keyframes shake {
+    10%, 90% {
+        transform: translateX(-1px);
+    }
+    20%, 80% {
+        transform: translateX(2px);
+    }
+    30%, 50%, 70% {
+        transform: translateX(-4px);
+    }
+    40%, 60% {
+        transform: translateX(4px);
+    }
+  }
+  
+  /* =======================
+     "Morph to" Box Styles
+     ======================= */
+  .target-word-box {
+    position: fixed;
+    bottom: 241px; /* Adjust based on keyboard height */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #538d4e;
+    padding: 8px 16px;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 1em;
+    z-index: 1003;
+    max-width: 90%;
+    text-align: center;
+  }
+  
+  /* =======================
+     On-Screen Keyboard Styles
+     ======================= */
+  #keyboard-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #121213;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 1002;
+  }
+  
+  .keyboard-row {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 5px;
+  }
+  
+  .key {
+    width: 40px;
+    height: 60px;
+    margin: 2px;
+    background-color: #818384;
+    border: none;
+    border-radius: 4px;
+    color: #ffffff;
+    font-size: 1em;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    user-select: none;
+    touch-action: manipulation; /* Prevent default touch actions */
+  }
+  
+  .key.wide {
+    width: 60px;
+  }
+  
+  .key.correct {
+    background-color: #538d4e !important;
+    color: #fff !important;
+  }
+  
+  .key.present {
+    background-color: #b59f3b !important;
+    color: #fff !important;
+  }
+  
+  .key.absent {
+    background-color: #3a3a3c !important;
+    color: #fff !important;
+  }
+  
+  .key:active {
+    transform: scale(0.95);
+  }
+  
+  /* =======================
+     Fixed Error Message
+     ======================= */
+  .error-message {
+    position: fixed;
+    bottom: 130px; /* Positioned above the keyboard and target word box */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #ff4d4d;
+    color: #ffffff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    z-index: 1007;
+    display: none; /* Hidden by default */
     font-size: 1em;
   }
-
-  /* Adjust "Morph to" Box Position and Size */
-  .target-word-box {
-    bottom: 80px; /* Adjusted for smaller screens */
-    padding: 6px 12px;
-    font-size: 0.9em;
+  
+  /* =======================
+     Modal Styles
+     ======================= */
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 1005;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(18, 18, 19, 0.95);
   }
-
-  /* Adjust Error Message Size */
-  .error-message {
-    bottom: 120px; /* Adjusted for smaller screens */
-    font-size: 0.9em;
-    padding: 8px 16px;
+  
+  .modal-content {
+    background-color: #1a1a1b;
+    margin: 10% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 90%;
+    max-width: 500px;
+    color: #ffffff;
+    border-radius: 10px;
+    position: relative;
   }
-
-  /* Adjust Keyboard Keys for Smaller Screens */
-  .key {
-    width: 35px;
-    height: 50px;
-    font-size: 0.9em;
+  
+  .close-button {
+    color: #aaaaaa;
+    position: absolute;
+    right: 20px;
+    top: 15px;
+    font-size: 2em;
+    cursor: pointer;
   }
-
-  .key.wide {
-    width: 50px;
+  
+  .close-button:hover {
+    color: #ffffff;
   }
-
-  /* Adjust Grid Container Width */
-  #grid-container {
-    max-width: 300px;
+  
+  /* =======================
+     Overlay Styles
+     ======================= */
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(18, 18, 19, 0.95);
+    display: none; /* Hidden by default */
+    justify-content: center;
+    align-items: center;
+    z-index: 1006;
   }
-
-  /* Adjust Guess Distribution */
+  
+  .overlay-content {
+    background-color: #1a1a1b;
+    padding: 20px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 500px;
+    color: #ffffff;
+    position: relative;
+  }
+  
+  .overlay-header {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .star-icon {
+    font-size: 3em;
+    color: #f5c518;
+  }
+  
+  .overlay-header h2 {
+    margin: 10px 0;
+    font-size: 1.8em;
+  }
+  
+  .close-overlay {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 2em;
+    cursor: pointer;
+    color: #ffffff;
+  }
+  
+  .overlay-section {
+    margin-bottom: 20px;
+  }
+  
+  .overlay-section h3 {
+    text-align: center;
+    margin-bottom: 10px;
+    text-decoration: underline;
+  }
+  
+  .stats {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+  }
+  
+  .stat {
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  
+  .stat-label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  
+  .stat-value {
+    display: block;
+    font-size: 1.2em;
+  }
+  
   .guess-distribution {
-    gap: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
   }
-
-  /* Prevent Overlaps */
-  header, .target-word-box, .error-message, #grid-container {
-    box-sizing: border-box;
-    padding: 0 10px;
+  
+  .guess-bar {
+    display: flex;
+    align-items: center;
   }
-}
-
-/* Prevent Zoom on Rapid Taps */
-button, .key {
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent; /* Remove tap highlight */
-}
-
-button:focus, .key:focus {
-  outline: none;
-}
+  
+  .guess-number {
+    width: 20px;
+    text-align: right;
+    margin-right: 10px;
+    font-size: 1em;
+  }
+  
+  .guess-progress {
+    flex: 1;
+    height: 20px;
+    background-color: #3a3a3c;
+    border-radius: 5px;
+    position: relative;
+  }
+  
+  .guess-progress::after {
+    content: attr(data-count);
+    position: absolute;
+    right: 5px;
+    top: 0;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    color: #ffffff;
+    font-size: 0.8em;
+  }
+  
+  .guess-bar-green {
+    background-color: #538d4e;
+    height: 100%;
+    border-radius: 5px;
+    transition: width 0.5s ease-in-out;
+  }
+  
+  .guess-bar-gray {
+    background-color: #3a3a3c;
+    height: 100%;
+    border-radius: 5px;
+    transition: width 0.5s ease-in-out;
+  }
+  
+  .guess-bar-failed {
+    background-color: #ff4d4d;
+    height: 100%;
+    border-radius: 5px;
+    transition: width 0.5s ease-in-out;
+  }
+  
+  .overlay-button {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #6AAA64;
+    border: none;
+    border-radius: 5px;
+    color: #ffffff;
+    font-size: 1em;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .overlay-button:hover {
+    background-color: #538d4e;
+  }
+  
+  #share-button-overlay i {
+    margin-right: 10px;
+  }
+  
+  /* =======================
+     "Morph to" Box Above Keyboard
+     ======================= */
+  /* Already styled above */
+  
+  /* =======================
+     Animation for Game Title
+     ======================= */
+  @keyframes titleAnimation {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+  }
+  
+  .animate-title {
+    animation: titleAnimation 0.3s ease-in-out;
+  }
+  
+  /* =======================
+     Responsive Design
+     ======================= */
+  @media (max-width: 600px) {
+    /* Adjust Tile Sizes */
+    .tile {
+      width: 40px;
+      height: 40px;
+      font-size: 1.5em;
+    }
+  
+    /* Adjust Header Title Size */
+    header h1 {
+      font-size: 1.5em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  
+    /* Adjust Navigation Buttons */
+    .nav-buttons button {
+      font-size: 1em;
+    }
+  
+    /* Adjust "Morph to" Box Position and Size */
+    .target-word-box {
+      bottom: 241px; /* Adjusted for smaller screens */
+      padding: 6px 12px;
+      font-size: 0.9em;
+    }
+  
+    /* Adjust Error Message Size */
+    .error-message {
+      bottom: 120px; /* Adjusted for smaller screens */
+      font-size: 0.9em;
+      padding: 8px 16px;
+    }
+  
+    /* Adjust Keyboard Keys for Smaller Screens */
+    .key {
+      width: 35px;
+      height: 50px;
+      font-size: 0.9em;
+    }
+  
+    .key.wide {
+      width: 50px;
+    }
+  
+    /* Adjust Grid Container Width */
+    #grid-container {
+      max-width: 300px;
+    }
+  
+    /* Adjust Guess Distribution */
+    .guess-distribution {
+      gap: 8px;
+    }
+  
+    /* Prevent Overlaps */
+    header, .target-word-box, .error-message, #grid-container {
+      box-sizing: border-box;
+      padding: 0 10px;
+    }
+  
+    /* Allow Title to Wrap and Align Left */
+    header h1 {
+      text-align: left;
+      width: 100%;
+      padding-left: 20px;
+      white-space: normal;
+    }
+  }
+  
+  /* =======================
+     Prevent Zoom on Rapid Taps
+     ======================= */
+  button, .key {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent; /* Remove tap highlight */
+  }
+  
+  button:focus, .key:focus {
+    outline: none;
+  }
+  
