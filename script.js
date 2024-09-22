@@ -18,17 +18,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const tutorialModal = document.getElementById('tutorial-modal');
   const tutorialButton = document.getElementById('tutorial-button');
   const closeButton = document.querySelector('.close-button');
-  const dailyModeButton = document.getElementById('daily-mode');
-  const unlimitedModeButton = document.getElementById('unlimited-mode');
   const keyboardContainer = document.getElementById('keyboard-container');
   const messageContainer = document.getElementById('message-container');
   const shareButtonOverlay = document.getElementById('share-button-overlay');
   const statsOverlay = document.getElementById('stats-overlay');
   const closeOverlayButton = document.querySelector('.close-overlay');
-  const beatBotLink = document.getElementById('beat-bot-link'); // Removed
-  const exploreButton = document.getElementById('explore-button');
   const statsButton = document.getElementById('stats-button');
   const modeButton = document.getElementById('mode-button');
+  const gameTitle = document.getElementById('game-title'); // Added for header text updates
 
   // Show tutorial on first load
   if (!localStorage.getItem('morphleFirstVisit')) {
@@ -48,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
     .then(response => response.json())
     .then(data => {
       puzzles = data;
-      fetchPuzzle('daily');
+      fetchPuzzle(mode);
     });
 
   function fetchPuzzle(modeType = 'daily') {
@@ -79,11 +76,17 @@ document.addEventListener('DOMContentLoaded', () => {
         // Puzzle already played today, retrieve from storage
         startWord = playedPuzzles[todayStr].startWord;
         endWord = playedPuzzles[todayStr].endWord;
+        guesses = playedPuzzles[todayStr].guesses || [];
         startGame(true);
         return;
       } else {
         // Mark puzzle as not yet played
-        playedPuzzles[todayStr] = { startWord: puzzle.start_word.toUpperCase(), endWord: puzzle.end_word.toUpperCase(), played: false };
+        playedPuzzles[todayStr] = { 
+          startWord: puzzle.start_word.toUpperCase(), 
+          endWord: puzzle.end_word.toUpperCase(), 
+          played: false,
+          guesses: []
+        };
         localStorage.setItem('morphlePlayedPuzzles', JSON.stringify(playedPuzzles));
       }
     } else {
@@ -101,7 +104,6 @@ document.addEventListener('DOMContentLoaded', () => {
     endWordSpan.textContent = endWord;
     previousWord = startWord;
     currentGuess = '';
-    guesses = [];
     currentRow = 0;
     currentTile = 0;
     gameOver = false;
@@ -120,6 +122,11 @@ document.addEventListener('DOMContentLoaded', () => {
         puzzleData.guesses.forEach(guess => {
           submitGuess(guess, true);
         });
+        // If game was already played (won or lost), set gameOver accordingly
+        if (puzzleData.played) {
+          gameOver = true;
+          showStatsOverlay(puzzleData.won);
+        }
       }
     }
   }
@@ -153,7 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     firstRowKeys.forEach(key => {
       const buttonElement = document.createElement('button');
-      buttonElement.textContent = key;
+      buttonElement.innerHTML = key;
       buttonElement.setAttribute('data-key', key);
       buttonElement.classList.add('key');
       buttonElement.addEventListener('click', () => handleKeyClick(key));
@@ -173,7 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     secondRowKeys.forEach(key => {
       const buttonElement = document.createElement('button');
-      buttonElement.textContent = key;
+      buttonElement.innerHTML = key;
       buttonElement.setAttribute('data-key', key);
       buttonElement.classList.add('key');
       buttonElement.addEventListener('click', () => handleKeyClick(key));
@@ -184,7 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
     thirdRow.classList.add('keyboard-row');
 
     const enterButton = document.createElement('button');
-    enterButton.textContent = 'Enter';
+    enterButton.innerHTML = '<i class="fas fa-arrow-right"></i>'; // Using FontAwesome icon
     enterButton.setAttribute('data-key', 'Enter');
     enterButton.classList.add('key', 'wide');
     enterButton.addEventListener('click', () => handleKeyClick('Enter'));
@@ -192,7 +199,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     thirdRowKeys.forEach(key => {
       const buttonElement = document.createElement('button');
-      buttonElement.textContent = key;
+      buttonElement.innerHTML = key;
       buttonElement.setAttribute('data-key', key);
       buttonElement.classList.add('key');
       buttonElement.addEventListener('click', () => handleKeyClick(key));
@@ -200,7 +207,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     const deleteButton = document.createElement('button');
-    deleteButton.textContent = 'Del';
+    deleteButton.innerHTML = '<i class="fas fa-backspace"></i>'; // Using FontAwesome icon
     deleteButton.setAttribute('data-key', 'Backspace');
     deleteButton.classList.add('key', 'wide');
     deleteButton.addEventListener('click', () => handleKeyClick('Backspace'));
@@ -404,13 +411,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function checkWinOrLose(guess) {
     if (guess === endWord) {
-      showMessage('Congratulations! You solved it.');
-      gameOver = true;
-      showStatsOverlay(true);
+      if (mode === 'daily') {
+        showMessage('Well done! You solved it.');
+        gameOver = true;
+        showStatsOverlay(true);
+        saveGameResult(true);
+      } else {
+        showMessage('Well done! Unlimited mode is for practice and does not count towards stats.');
+        gameOver = true;
+      }
     } else if (currentRow >= maxGuesses - 1) {
-      showMessage('Game Over! The word was ' + endWord);
-      gameOver = true;
-      showStatsOverlay(false);
+      if (mode === 'daily') {
+        showMessage('Game Over! The word was ' + endWord);
+        gameOver = true;
+        showStatsOverlay(false);
+        saveGameResult(false);
+      } else {
+        showMessage('Game Over! Unlimited mode is for practice and does not count towards stats.');
+        gameOver = true;
+      }
     }
   }
 
@@ -427,13 +446,26 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function populateOverlayStats(isWin) {
+    if (mode !== 'daily') {
+      // In unlimited mode, do not show stats
+      document.getElementById('overlay-heading').textContent = 'Well done!';
+      const overlaySections = statsOverlay.querySelectorAll('.overlay-section');
+      overlaySections.forEach(section => {
+        if (!section.querySelector('h3')) {
+          section.style.display = 'none';
+        }
+      });
+      return;
+    }
+
+    document.getElementById('overlay-heading').textContent = 'Well done!';
+
     // Update statistics (played, win%, current streak, max streak)
     let played = parseInt(localStorage.getItem('morphlePlayed')) || 0;
     let wins = parseInt(localStorage.getItem('morphleWins')) || 0;
     let currentStreak = parseInt(localStorage.getItem('morphleCurrentStreak')) || 0;
     let maxStreak = parseInt(localStorage.getItem('morphleMaxStreak')) || 0;
 
-    played += 1;
     if (isWin) {
       wins += 1;
       currentStreak += 1;
@@ -443,6 +475,8 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       currentStreak = 0;
     }
+
+    played += 1;
 
     localStorage.setItem('morphlePlayed', played);
     localStorage.setItem('morphleWins', wins);
@@ -461,11 +495,16 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function populateGuessDistribution(isWin) {
+    if (mode !== 'daily') {
+      // Do not show guess distribution in unlimited mode
+      return;
+    }
+
     const guessDistributionContainer = document.getElementById('guess-distribution');
     const distribution = {};
 
-    // Initialize distribution from 5 to 10 and failed
-    for (let i = 5; i <= 10; i++) {
+    // Initialize distribution from 1 to maxGuesses and failed
+    for (let i = 1; i <= maxGuesses; i++) {
       distribution[i] = 0;
     }
     distribution['Failed'] = 0;
@@ -473,18 +512,38 @@ document.addEventListener('DOMContentLoaded', () => {
     // Calculate distribution based on guesses
     if (isWin) {
       const attempts = guesses.length;
-      if (attempts >= 5 && attempts <=10) {
+      if (attempts >=1 && attempts <= maxGuesses) {
         distribution[attempts] += 1;
       }
     } else {
       distribution['Failed'] += 1;
     }
 
+    // Retrieve previous distribution from localStorage
+    let storedDistribution = JSON.parse(localStorage.getItem('morphleGuessDistribution')) || {};
+
+    // Update with current game
+    for (let key in distribution) {
+      if (distribution[key] > 0) {
+        storedDistribution[key] = (storedDistribution[key] || 0) + distribution[key];
+      }
+    }
+
+    // Save updated distribution
+    localStorage.setItem('morphleGuessDistribution', JSON.stringify(storedDistribution));
+
+    // Calculate total games
+    let totalGames = 0;
+    for (let key in storedDistribution) {
+      totalGames += storedDistribution[key];
+    }
+
     // Clear previous distribution
     guessDistributionContainer.innerHTML = '';
 
-    for (let i = 5; i <= 10; i++) {
-      const count = distribution[i] || 0;
+    // Generate bars for 1 to maxGuesses
+    for (let i = 1; i <= maxGuesses; i++) {
+      const count = storedDistribution[i] || 0;
       const bar = document.createElement('div');
       bar.classList.add('guess-bar');
 
@@ -494,12 +553,10 @@ document.addEventListener('DOMContentLoaded', () => {
       bar.appendChild(number);
 
       const progress = document.createElement('div');
-      progress.classList.add('guess-progress');
+      progress.classList.add('guess-progress', 'guess-bar-green');
 
-      if (count > 0) {
-        progress.classList.add('guess-bar-green');
-      }
-
+      let percentage = totalGames > 0 ? (count / totalGames) * 100 : 0;
+      progress.style.width = percentage + '%';
       progress.setAttribute('data-count', count);
       bar.appendChild(progress);
 
@@ -507,7 +564,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Add Failed Bar
-    const failedCount = distribution['Failed'] || 0;
+    const failedCount = storedDistribution['Failed'] || 0;
     const failedBar = document.createElement('div');
     failedBar.classList.add('guess-bar');
 
@@ -518,6 +575,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const failedProgress = document.createElement('div');
     failedProgress.classList.add('guess-progress', 'guess-bar-failed');
+    let failedPercentage = totalGames > 0 ? (failedCount / totalGames) * 100 : 0;
+    failedProgress.style.width = failedPercentage + '%';
     failedProgress.setAttribute('data-count', failedCount);
     failedBar.appendChild(failedProgress);
 
@@ -560,14 +619,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const endWordLetters = endWord.split('');
     let rowResult = '';
 
-    // Copy arrays to manipulate
-    let endWordLettersCopy = endWordLetters.slice();
-
     // First pass: Check for correct letters in correct positions
     for (let i = 0; i < 5; i++) {
       if (guessLetters[i] === endWordLetters[i]) {
         rowResult += '🟩';
-        endWordLettersCopy[i] = null;
+        endWordLetters[i] = null;
         guessLetters[i] = null;
       } else {
         rowResult += '⬜';
@@ -576,9 +632,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Second pass: Check for correct letters in wrong positions
     for (let i = 0; i < 5; i++) {
-      if (guessLetters[i] && endWordLettersCopy.includes(guessLetters[i])) {
+      if (guessLetters[i] && endWordLetters.includes(guessLetters[i])) {
         rowResult = replaceAt(rowResult, i, '🟨');
-        endWordLettersCopy[endWordLettersCopy.indexOf(guessLetters[i])] = null;
+        endWordLetters[endWordLetters.indexOf(guessLetters[i])] = null;
         guessLetters[i] = null;
       }
     }
@@ -591,6 +647,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function saveGuess(guess) {
+    if (mode !== 'daily') {
+      // Do not save guesses in unlimited mode
+      return;
+    }
+
     const todayStr = new Date().toISOString().split('T')[0];
     const playedPuzzles = JSON.parse(localStorage.getItem('morphlePlayedPuzzles')) || {};
 
@@ -598,6 +659,21 @@ document.addEventListener('DOMContentLoaded', () => {
       playedPuzzles[todayStr].guesses = playedPuzzles[todayStr].guesses || [];
       playedPuzzles[todayStr].guesses.push(guess);
       playedPuzzles[todayStr].played = true;
+      localStorage.setItem('morphlePlayedPuzzles', JSON.stringify(playedPuzzles));
+    }
+  }
+
+  function saveGameResult(won) {
+    if (mode !== 'daily') {
+      return;
+    }
+
+    const todayStr = new Date().toISOString().split('T')[0];
+    const playedPuzzles = JSON.parse(localStorage.getItem('morphlePlayedPuzzles')) || {};
+
+    if (playedPuzzles[todayStr]) {
+      playedPuzzles[todayStr].played = true;
+      playedPuzzles[todayStr].won = won;
       localStorage.setItem('morphlePlayedPuzzles', JSON.stringify(playedPuzzles));
     }
   }
@@ -621,13 +697,41 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   statsButton.addEventListener('click', () => {
-    populateOverlayStats(false); // Show current stats without game over
+    if (mode === 'daily') {
+      populateOverlayStats(false); // Show current stats without game over
+    } else {
+      // In unlimited mode, no stats to show
+      document.getElementById('overlay-heading').textContent = 'Well done!';
+      const overlaySections = statsOverlay.querySelectorAll('.overlay-section');
+      overlaySections.forEach(section => {
+        if (!section.querySelector('h3')) {
+          section.style.display = 'none';
+        }
+      });
+    }
     statsOverlay.style.display = 'flex';
   });
 
   modeButton.addEventListener('click', () => {
     mode = (mode === 'daily') ? 'unlimited' : 'daily';
-    modeButton.textContent = (mode === 'daily') ? '📅∞' : '∞📅';
+    
+    // Update mode button icon
+    const modeIcon = modeButton.querySelector('i');
+    if (mode === 'daily') {
+      modeIcon.classList.remove('fa-calendar-alt');
+      modeIcon.classList.add('fa-infinity');
+      modeButton.title = 'Switch to Daily Mode';
+      // Update game title
+      animateGameTitle('Morphle Daily');
+    } else {
+      modeIcon.classList.remove('fa-infinity');
+      modeIcon.classList.add('fa-calendar-alt');
+      modeButton.title = 'Switch to Unlimited Mode';
+      // Update game title
+      animateGameTitle('Morphle Unlimited');
+    }
+
+    // Fetch new puzzle based on mode
     fetchPuzzle(mode);
   });
 
@@ -636,17 +740,16 @@ document.addEventListener('DOMContentLoaded', () => {
     statsOverlay.style.display = 'none';
   });
 
-  // Explore Button Event Listener (Removed)
-  exploreButton.addEventListener('click', () => {
-    window.open('https://example.com/morphle-archive', '_blank'); // Update URL as needed
-  });
-
-  // Stats Button Event Listener
-  statsButton.addEventListener('click', () => {
-    populateOverlayStats(false);
-    statsOverlay.style.display = 'flex';
-  });
-
   // Share Button in Overlay
   shareButtonOverlay.addEventListener('click', shareResults);
+
+  // Function to animate game title
+  function animateGameTitle(newText) {
+    gameTitle.classList.add('animate-title');
+    setTimeout(() => {
+      gameTitle.textContent = newText;
+      gameTitle.classList.remove('animate-title');
+    }, 300); // Duration should match CSS animation duration
+  }
+
 });

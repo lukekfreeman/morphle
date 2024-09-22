@@ -5,15 +5,17 @@
   <title>Morphle</title>
   <link rel="stylesheet" href="style.css">
   <link rel="icon" href="images/favicon.ico">
+  <!-- FontAwesome CDN for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
   <div class="game-container">
     <header>
-      <h1>Morphle</h1>
+      <h1 id="game-title">Morphle</h1>
       <div class="nav-buttons">
-        <button id="stats-button" title="Statistics">📊</button>
-        <button id="mode-button" title="Switch Mode">📅∞</button>
-        <button id="tutorial-button" title="How to Play">?</button>
+        <button id="stats-button" title="Statistics"><i class="fas fa-chart-bar"></i></button>
+        <button id="mode-button" title="Switch Mode"><i class="fas fa-calendar-alt"></i></button>
+        <button id="tutorial-button" title="How to Play"><i class="fas fa-question-circle"></i></button>
       </div>
     </header>
     <main>
@@ -23,11 +25,9 @@
       </div>
       <div id="message-container"></div>
       <div id="grid-container"></div>
-      <!-- Share Button (Hidden initially) -->
-      <button id="share-button-overlay" class="overlay-button">📤 Share</button>
     </main>
     <footer>
-      <!-- Removed daily-mode and unlimited-mode buttons from footer -->
+      <!-- Footer content can be added here if needed -->
     </footer>
   </div>
 
@@ -60,8 +60,8 @@
   <div id="stats-overlay" class="overlay">
     <div class="overlay-content">
       <div class="overlay-header">
-        <div class="star-icon">⭐</div>
-        <h2>Congratulations!</h2>
+        <div class="star-icon"><i class="fas fa-star"></i></div>
+        <h2 id="overlay-heading">Well done!</h2>
         <span class="close-overlay">&times;</span>
       </div>
       <div class="overlay-section">
@@ -92,8 +92,7 @@
         </div>
       </div>
       <div class="overlay-section">
-        <button id="share-button-overlay" class="overlay-button">📤 Share</button>
-        <button id="explore-button" class="overlay-button explore-button">🔍 Explore</button>
+        <button id="share-button-overlay" class="overlay-button"><i class="fas fa-share-alt"></i> Share</button>
       </div>
     </div>
   </div>

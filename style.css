@@ -24,6 +24,7 @@ header, footer {
 
 header h1 {
   margin: 0;
+  font-size: 2em;
 }
 
 .nav-buttons {
@@ -31,7 +32,7 @@ header h1 {
   top: 1em;
   right: 1em;
   display: flex;
-  gap: 10px;
+  gap: 15px;
 }
 
 .nav-buttons button {
@@ -264,10 +265,12 @@ main {
 
 .star-icon {
   font-size: 3em;
+  color: #f5c518;
 }
 
 .overlay-header h2 {
   margin: 10px 0;
+  font-size: 1.8em;
 }
 
 .close-overlay {
@@ -353,18 +356,21 @@ main {
   background-color: #538d4e;
   height: 100%;
   border-radius: 5px;
+  transition: width 0.5s ease-in-out;
 }
 
 .guess-bar-gray {
   background-color: #3a3a3c;
   height: 100%;
   border-radius: 5px;
+  transition: width 0.5s ease-in-out;
 }
 
 .guess-bar-failed {
   background-color: #ff4d4d;
   height: 100%;
   border-radius: 5px;
+  transition: width 0.5s ease-in-out;
 }
 
 .overlay-button {
@@ -386,29 +392,7 @@ main {
   background-color: #538d4e;
 }
 
-.explore-button {
-  background-color: #818384;
-}
-
-.explore-button:hover {
-  background-color: #565758;
-}
-
-/* Share Button in Overlay */
-#share-button-overlay {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-#share-button-overlay::before {
-  content: '📤';
-  margin-right: 10px;
-}
-
-/* Explore Button in Overlay */
-#explore-button::before {
-  content: '🔍';
+#share-button-overlay i {
   margin-right: 10px;
 }
 
@@ -454,4 +438,19 @@ main {
     padding: 8px;
     font-size: 0.9em;
   }
+
+  .nav-buttons {
+    gap: 10px;
+  }
+}
+
+/* Animation for game title */
+@keyframes titleAnimation {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+.animate-title {
+  animation: titleAnimation 0.3s ease-in-out;
 }
