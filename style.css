@@ -123,3 +123,47 @@ button:hover {
     font-size: 2em;
     cursor: pointer;
 }
+
+/* Add this to your existing CSS */
+
+.tile-row {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 5px;
+}
+
+.tile {
+    width: 60px;
+    height: 60px;
+    background-color: #3a3a3c;
+    margin: 0 2px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2em;
+    font-weight: bold;
+    text-transform: uppercase;
+    border: 2px solid #3a3a3c;
+}
+
+.tile.filled {
+    border: 2px solid #565758;
+}
+
+.tile.correct {
+    background-color: #538d4e !important;
+    border-color: #538d4e !important;
+    color: #fff;
+}
+
+.tile.present {
+    background-color: #b59f3b !important;
+    border-color: #b59f3b !important;
+    color: #fff;
+}
+
+.tile.absent {
+    background-color: #3a3a3c !important;
+    border-color: #3a3a3c !important;
+    color: #fff;
+}
