@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mergle</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="icon" href="/static/images/favicon.ico">
+</head>
+<body>
+    <div class="game-container">
+        <header>
+            <h1>Mergle</h1>
+            <button id="tutorial-button">?</button>
+        </header>
+        <main>
+            <div id="game-info">
+                <p>Start Word: <span id="start-word"></span></p>
+                <p>Destination Word: <span id="end-word"></span></p>
+            </div>
+            <div id="grid-container"></div>
+            <div id="keyboard-container"></div>
+        </main>
+        <footer>
+            <button id="daily-mode">Daily Mode</button>
+            <button id="unlimited-mode">Unlimited Mode</button>
+        </footer>
+    </div>
+
+    <!-- Tutorial Modal -->
+    <div id="tutorial-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>How to Play Mergle</h2>
+            <p>Transform the starting word into the destination word by swapping one letter at a time. You can rearrange the letters after each swap. Each intermediate word must be a valid 5-letter word.</p>
+        </div>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
