@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let mode = 'daily'; // Default mode
 
   // DOM Elements
-  const startWordSpan = document.getElementById('start-word');
+  const startWordRow = document.getElementById('starting-word-row');
   const gridContainer = document.getElementById('grid-container');
   const tutorialModal = document.getElementById('tutorial-modal');
   const tutorialButton = document.getElementById('tutorial-button');
@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const statsButton = document.getElementById('stats-button');
   const modeButton = document.getElementById('mode-button');
   const gameTitle = document.getElementById('game-title'); // For header text updates
-  const gameInfoDiv = document.getElementById('game-info'); // For target word display
+  const targetWordBox = document.getElementById('target-word-box'); // For target word display
   const overlayHeading = document.getElementById('overlay-heading');
 
   // Show tutorial on first load
@@ -113,7 +113,8 @@ document.addEventListener('DOMContentLoaded', () => {
           endWord: endWord,
           guesses: [],
           played: false,
-          won: false
+          won: false,
+          previousWord: startWord
         };
         localStorage.setItem('morphlePlayedPuzzles', JSON.stringify(playedPuzzles));
 
@@ -141,17 +142,29 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Update the target word display
-    gameInfoDiv.innerHTML = `<p>Morph to: <span id="end-word">${endWord}</span></p>`;
+    targetWordBox.innerHTML = `Morph to: <span id="end-word">${endWord}</span>`;
+
+    // Initialize Starting Word Row
+    initializeStartingWordRow();
+  }
+
+  // Initialize Starting Word Row
+  function initializeStartingWordRow() {
+    startWordRow.innerHTML = ''; // Clear existing tiles
+
+    const guessLetters = startWord.split('');
+
+    for (let i = 0; i < 5; i++) {
+      const tile = document.createElement('div');
+      tile.classList.add('tile', 'filled');
+      tile.textContent = guessLetters[i] || '';
+      startWordRow.appendChild(tile);
+    }
   }
 
   // Start or Resume Game
   function startGame(isReplay = false, hasWon = false) {
-    startWordSpan.textContent = startWord;
-    previousWord = startWord;
-    currentGuess = '';
-    currentRow = 0;
-    currentTile = 0;
-    gridContainer.innerHTML = '';
+    gridContainer.innerHTML = ''; // Clear existing grid
     messageContainer.textContent = '';
     statsOverlay.style.display = 'none';
     createGrid();
@@ -166,8 +179,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // If the game was completed, show stats overlay
       if (hasWon || guesses.length >= maxGuesses) {
         gameOver = true;
-        const won = hasWon;
-        showStatsOverlay(won);
+        showStatsOverlay(hasWon);
       }
     }
   }
@@ -515,28 +527,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
     overlayHeading.textContent = 'Well done!';
 
-    // Update statistics (played, win%, current streak, max streak)
-    let played = parseInt(localStorage.getItem('morphlePlayed')) || 0;
-    let wins = parseInt(localStorage.getItem('morphleWins')) || 0;
-    let currentStreak = parseInt(localStorage.getItem('morphleCurrentStreak')) || 0;
-    let maxStreak = parseInt(localStorage.getItem('morphleMaxStreak')) || 0;
+    // Recalculate statistics based on stored game history
+    const playedPuzzles = JSON.parse(localStorage.getItem('morphlePlayedPuzzles')) || {};
+    let played = 0;
+    let wins = 0;
+    let currentStreak = 0;
+    let maxStreak = 0;
 
-    if (isWin) {
-      wins += 1;
-      currentStreak += 1;
-      if (currentStreak > maxStreak) {
-        maxStreak = currentStreak;
+    const todayStr = new Date().toISOString().split('T')[0];
+
+    // Iterate through all daily games
+    Object.keys(playedPuzzles).forEach(date => {
+      played += 1;
+      if (playedPuzzles[date].won) {
+        wins += 1;
+        currentStreak += 1;
+        if (currentStreak > maxStreak) {
+          maxStreak = currentStreak;
+        }
+      } else {
+        currentStreak = 0;
       }
-    } else {
-      currentStreak = 0;
-    }
-
-    played += 1;
-
-    localStorage.setItem('morphlePlayed', played);
-    localStorage.setItem('morphleWins', wins);
-    localStorage.setItem('morphleCurrentStreak', currentStreak);
-    localStorage.setItem('morphleMaxStreak', maxStreak);
+    });
 
     let winPercentage = played > 0 ? Math.round((wins / played) * 100) : 0;
 
@@ -565,41 +577,33 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     distribution['Failed'] = 0;
 
-    // Calculate distribution based on guesses
-    if (isWin) {
-      const attempts = guesses.length;
-      if (attempts >= 5 && attempts <= maxGuesses) {
-        distribution[attempts] += 1;
-      }
-    } else {
-      distribution['Failed'] += 1;
-    }
-
     // Retrieve previous distribution from localStorage
     let storedDistribution = JSON.parse(localStorage.getItem('morphleGuessDistribution')) || {};
-
-    // Update with current game
-    for (let key in distribution) {
-      if (distribution[key] > 0) {
-        storedDistribution[key] = (storedDistribution[key] || 0) + distribution[key];
-      }
-    }
-
-    // Save updated distribution
-    localStorage.setItem('morphleGuessDistribution', JSON.stringify(storedDistribution));
-
-    // Calculate total games
-    let totalGames = 0;
-    for (let key in storedDistribution) {
-      totalGames += storedDistribution[key];
-    }
 
     // Clear previous distribution
     guessDistributionContainer.innerHTML = '';
 
+    // Iterate through all daily games to calculate distribution
+    const playedPuzzles = JSON.parse(localStorage.getItem('morphlePlayedPuzzles')) || {};
+    Object.values(playedPuzzles).forEach(puzzle => {
+      if (puzzle.played) {
+        if (puzzle.won && puzzle.guesses.length >= 5 && puzzle.guesses.length <= maxGuesses) {
+          distribution[puzzle.guesses.length] = (distribution[puzzle.guesses.length] || 0) + 1;
+        } else if (!puzzle.won) {
+          distribution['Failed'] = (distribution['Failed'] || 0) + 1;
+        }
+      }
+    });
+
     // Generate bars for 5 to maxGuesses
+    let totalGames = 0;
     for (let i = 5; i <= maxGuesses; i++) {
-      const count = storedDistribution[i] || 0;
+      totalGames += distribution[i] || 0;
+    }
+    totalGames += distribution['Failed'] || 0;
+
+    for (let i = 5; i <= maxGuesses; i++) {
+      const count = distribution[i] || 0;
       const bar = document.createElement('div');
       bar.classList.add('guess-bar');
 
@@ -621,7 +625,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Add Failed Bar
-    const failedCount = storedDistribution['Failed'] || 0;
+    const failedCount = distribution['Failed'] || 0;
     const failedBar = document.createElement('div');
     failedBar.classList.add('guess-bar');
 
@@ -720,6 +724,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (playedPuzzles[todayStr]) {
       playedPuzzles[todayStr].guesses = playedPuzzles[todayStr].guesses || [];
       playedPuzzles[todayStr].guesses.push(guess);
+      playedPuzzles[todayStr].previousWord = guess; // Update previous word
       localStorage.setItem('morphlePlayedPuzzles', JSON.stringify(playedPuzzles));
     }
   }
@@ -803,12 +808,12 @@ document.addEventListener('DOMContentLoaded', () => {
   function updateModeButtonIcon() {
     const modeIcon = modeButton.querySelector('i');
     if (mode === 'daily') {
-      modeIcon.classList.remove('fa-calendar-alt');
-      modeIcon.classList.add('fa-infinity');
-      modeButton.title = 'Switch to Unlimited Mode';
-    } else {
       modeIcon.classList.remove('fa-infinity');
       modeIcon.classList.add('fa-calendar-alt');
+      modeButton.title = 'Switch to Unlimited Mode';
+    } else {
+      modeIcon.classList.remove('fa-calendar-alt');
+      modeIcon.classList.add('fa-infinity');
       modeButton.title = 'Switch to Daily Mode';
     }
   }
